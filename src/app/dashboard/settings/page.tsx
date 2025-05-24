@@ -137,8 +137,8 @@ export default function SettingsPage() {
               <AvatarImage src={userProfile.avatarUrl || `https://avatar.vercel.sh/${userProfile.email}.png`} alt={userProfile.name} />
               <AvatarFallback>{userProfile.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
-            <Button variant="outline" size="sm" className="relative">
-              <UploadCloud className="mr-2 h-4 w-4" /> Upload New Avatar
+            <Button variant="outline" size="icon" className="relative" aria-label="Upload New Avatar">
+              <UploadCloud className="h-4 w-4" />
               <Input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled/>
             </Button>
              <p className="text-xs text-muted-foreground">File upload is disabled in this demo.</p>
