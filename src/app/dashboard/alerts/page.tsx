@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -10,6 +11,7 @@ import { mockAlertSettings } from '@/lib/mock-data';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertSetting[]>([]);
@@ -109,12 +111,20 @@ export default function AlertsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 border-2 border-dashed border-muted rounded-lg">
+        <div className="text-center py-12 border-2 border-dashed border-muted rounded-lg flex flex-col items-center">
           <BellOff className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-2 text-xl font-semibold">No Alerts Configured</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Create your first alert to get notified about specific threats.
           </p>
+          <Image 
+            src="https://placehold.co/300x200.png" 
+            alt="Empty alerts illustration" 
+            width={300} 
+            height={200} 
+            className="my-6 rounded-md object-cover"
+            data-ai-hint="empty alert"
+          />
           <Button className="mt-4" onClick={() => { setEditingAlert(undefined); setShowForm(true); }}>
             <PlusCircle className="mr-2 h-4 w-4" /> Create Alert
           </Button>

@@ -1,9 +1,11 @@
+
 "use client";
 import { AiSummaryForm } from '@/components/ai/ai-summary-form';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { mockThreats } from '@/lib/mock-data';
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function AiSummaryPage() {
   const searchParams = useSearchParams();
@@ -16,16 +18,19 @@ export default function AiSummaryPage() {
 
   useEffect(() => {
     if (threatId) {
+      setIsLoading(true); // Set loading to true when threatId is present to show loader
       const foundThreat = mockThreats.find(t => t.id === threatId);
       if (foundThreat) {
         setInitialDetails(foundThreat.detailsForSummary);
         if(!threatTitleParam) setThreatTitle(foundThreat.title);
       }
+      setIsLoading(false); 
+    } else {
+      setIsLoading(false); // No threatId, so not loading specific details
     }
-    setIsLoading(false); 
   }, [threatId, threatTitleParam]);
 
-  if (isLoading && threatId) { // Only show loader if we expect to load initial details
+  if (isLoading && threatId) { // Only show loader if we expect to load initial details for a specific threat
     return (
       <div className="flex h-[calc(100vh-10rem)] items-center justify-center">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -35,13 +40,25 @@ export default function AiSummaryPage() {
 
   return (
     <div className="space-y-6 py-8">
-       {!threatId && ( // Only show this title if not coming from a specific threat
-        <>
-          <h1 className="text-3xl font-bold tracking-tight">AI Threat Summary</h1>
-          <p className="text-muted-foreground">
-            Generate concise summaries of cybersecurity threats using AI.
-          </p>
-        </>
+       {!threatId && ( 
+        <div className="mb-8 p-6 rounded-lg bg-card border">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold tracking-tight text-primary">AI Threat Summary</h1>
+              <p className="text-muted-foreground mt-2">
+                Generate concise summaries of cybersecurity threats using AI. Paste any threat details below to get started.
+              </p>
+            </div>
+            <Image 
+              src="https://placehold.co/400x250.png" 
+              alt="AI analyzing data" 
+              width={400} 
+              height={250} 
+              className="rounded-md object-cover"
+              data-ai-hint="AI security"
+            />
+          </div>
+        </div>
       )}
       <AiSummaryForm initialThreatDetails={initialDetails} threatTitle={threatTitle} />
     </div>

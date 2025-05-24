@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -6,8 +7,9 @@ import { mockThreats } from '@/lib/mock-data';
 import { ThreatCard } from '@/components/threats/threat-card';
 import { ThreatFilter } from '@/components/threats/threat-filter';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, ListFilter, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ListFilter, Loader2, ShieldOff } from 'lucide-react'; // Added ShieldOff, removed ListFilter if not used
 import { parseISO, compareDesc } from 'date-fns';
+import Image from 'next/image';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -73,7 +75,7 @@ export default function ThreatFeedPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Threat Feed</h1>
@@ -91,12 +93,20 @@ export default function ThreatFeedPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <ShieldAlert className="mx-auto h-12 w-12 text-muted-foreground" />
+        <div className="text-center py-12 flex flex-col items-center">
+          <ShieldOff className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-2 text-xl font-semibold">No Threats Found</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Try adjusting your filters or check back later for new updates.
           </p>
+          <Image 
+            src="https://placehold.co/300x200.png" 
+            alt="No threats found illustration" 
+            width={300} 
+            height={200} 
+            className="my-6 rounded-md object-cover"
+            data-ai-hint="empty security"
+          />
         </div>
       )}
 
@@ -126,9 +136,3 @@ export default function ThreatFeedPage() {
     </div>
   );
 }
-
-// Detail page for a single threat
-// File: src/app/dashboard/threat-feed/[threatId]/page.tsx
-// This would be a new file if we want to implement it.
-// For now, ThreatCard links to it, but the page itself is not created to keep scope manageable.
-// If needed, I can add a basic placeholder for this page.
