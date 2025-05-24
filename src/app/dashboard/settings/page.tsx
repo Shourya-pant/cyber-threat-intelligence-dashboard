@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -137,7 +138,7 @@ export default function SettingsPage() {
               <AvatarFallback>{userProfile.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <Button variant="outline" size="sm" className="relative">
-              <UploadCloud className="mr-2 h-4 w-4" /> Change Avatar
+              <UploadCloud className="mr-2 h-4 w-4" /> Upload New Avatar
               <Input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled/>
             </Button>
              <p className="text-xs text-muted-foreground">File upload is disabled in this demo.</p>
