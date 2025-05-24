@@ -1,9 +1,11 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, AlertTriangle, BarChart2, Brain, ShieldCheck, Users } from 'lucide-react';
 import { APP_NAME } from '@/lib/constants';
 import Image from 'next/image';
+import { mockThreats } from '@/lib/mock-data'; // Import mockThreats
 
 export default function DashboardOverviewPage() {
   const quickLinks = [
@@ -12,6 +14,8 @@ export default function DashboardOverviewPage() {
     { title: "AI Summary", href: "/dashboard/ai-summary", icon: Brain, description: "Get AI-powered summaries of vulnerabilities." },
     { title: "Manage Alerts", href: "/dashboard/alerts", icon: AlertTriangle, description: "Configure and review your custom alerts." },
   ];
+
+  const firstMockThreat = mockThreats.length > 0 ? mockThreats[0] : null;
 
   return (
     <div className="space-y-8 py-8">
@@ -51,9 +55,13 @@ export default function DashboardOverviewPage() {
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>New 'Log4Shell' variant detected. <Link href="/dashboard/threat-feed/threat-1" className="text-primary hover:underline">View details</Link></li>
-              <li>AI summary generated for 'CVE-2024-XXXX'. <Link href="/dashboard/ai-summary/summary-1" className="text-primary hover:underline">Read summary</Link></li>
-              <li>Critical alert 'Ransomware Spike' triggered. <Link href="/dashboard/alerts/alert-1" className="text-primary hover:underline">Review alert</Link></li>
+              {firstMockThreat && (
+                <>
+                  <li>New '{firstMockThreat.title}' variant detected. <Link href={`/dashboard/threat-feed/${firstMockThreat.id}`} className="text-primary hover:underline">View details</Link></li>
+                  <li>AI summary generated for '{firstMockThreat.title}'. <Link href={`/dashboard/ai-summary?threatId=${firstMockThreat.id}&threatTitle=${encodeURIComponent(firstMockThreat.title)}`} className="text-primary hover:underline">Read summary</Link></li>
+                </>
+              )}
+              <li>Critical alert 'Ransomware Spike' triggered. <Link href="/dashboard/alerts" className="text-primary hover:underline">Review alerts</Link></li>
               <li>Analytics report for Q2 2024 updated. <Link href="/dashboard/analytics" className="text-primary hover:underline">See report</Link></li>
             </ul>
              <Image src="https://placehold.co/600x300.png" alt="Activity graph placeholder" width={600} height={300} className="mt-4 rounded-md" data-ai-hint="activity graph"/>
