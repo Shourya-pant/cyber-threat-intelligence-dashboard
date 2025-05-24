@@ -67,11 +67,12 @@ body {
     --input: 225 20% 20%; 
     --ring: 145 63% 49%; /* Neon green for focus rings */
     
-    --chart-1: hsl(0, 84%, 60%); /* Primary Red */
-    --chart-2: hsl(145, 63%, 49%); /* Accent Green */
-    --chart-3: hsl(200, 90%, 55%); /* A nice blue */
-    --chart-4: hsl(45, 100%, 55%); /* Yellow/Orange */
-    --chart-5: hsl(280, 80%, 65%); /* Purple */
+    /* Updated Chart Colors for better visibility on dark background */
+    --chart-1: hsl(0, 88%, 65%);   /* Brighter Red (Critical) */
+    --chart-2: hsl(130, 65%, 58%); /* Brighter Green (Low) */
+    --chart-3: hsl(200, 95%, 62%); /* Brighter Blue */
+    --chart-4: hsl(40, 100%, 60%); /* Bright Orange-Yellow (Medium) */
+    --chart-5: hsl(275, 85%, 70%); /* Brighter Purple (High) */
   }
 }
 
@@ -95,3 +96,15 @@ body {
     text-shadow: 0 0 10px hsl(var(--accent) / 0.7), 0 0 20px hsl(var(--accent) / 0.7), 0 0 30px hsl(var(--primary) / 1), 0 0 40px hsl(var(--primary) / 1);
   }
 }
+
+@keyframes draw-line {
+  0% { stroke-dasharray: 0, 1000; opacity: 0; }
+  50% { stroke-dasharray: 500, 500; opacity: 0.5; }
+  100% { stroke-dasharray: 1000, 0; opacity: 0; }
+}
+.animate-draw-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-line 10s linear infinite;
+}
+

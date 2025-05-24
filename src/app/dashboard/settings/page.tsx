@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -15,14 +15,13 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/contexts/auth-context';
 import { Loader2, Save, UploadCloud } from 'lucide-react';
-import type { UserProfile } from '@/types'; // Assuming UserProfile is defined
-import { mockUserProfile } from '@/lib/mock-data'; // Using mock data
+import type { UserProfile } from '@/types'; 
+import { mockUserProfile } from '@/lib/mock-data'; 
 import Link from 'next/link';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
-  // avatarUrl: z.string().url("Invalid URL for avatar.").optional(), // For file upload, this is different
 });
 
 const notificationsFormSchema = z.object({
@@ -31,79 +30,101 @@ const notificationsFormSchema = z.object({
 });
 
 export default function SettingsPage() {
-  const { user, loading: authLoading, login: updateUserAuthContext } = useAuth(); // Assuming login can also update user
+  const { user, loading: authLoading, login: updateUserAuthContext } = useAuth(); 
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user) {
-      setUserProfile({
-        ...mockUserProfile, // Start with mock, then overlay auth user info
-        name: user.name,
-        email: user.email,
-        avatarUrl: user.avatarUrl || mockUserProfile.avatarUrl,
-      });
+      // Attempt to load from localStorage first, then fallback to mock/auth user
+      const storedProfile = localStorage.getItem(`userProfile_${user.email}`);
+      if (storedProfile) {
+        setUserProfile(JSON.parse(storedProfile));
+      } else {
+        setUserProfile({
+          ...mockUserProfile, 
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl || mockUserProfile.avatarUrl,
+        });
+      }
     }
   }, [user]);
 
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
-    values: { // Use values instead of defaultValues to update when userProfile changes
+    values: { 
       name: userProfile?.name || "",
       email: userProfile?.email || "",
     }
   });
   
-  useEffect(() => { // Keep form in sync with userProfile state
+  useEffect(() => { 
     if (userProfile) {
       profileForm.reset({
         name: userProfile.name,
         email: userProfile.email,
       });
+      // Save to localStorage whenever userProfile changes
+      if(userProfile.email){
+        localStorage.setItem(`userProfile_${userProfile.email}`, JSON.stringify(userProfile));
+      }
     }
   }, [userProfile, profileForm]);
 
 
   const notificationsForm = useForm<z.infer<typeof notificationsFormSchema>>({
     resolver: zodResolver(notificationsFormSchema),
-    defaultValues: {
+    values: { // Use values to react to userProfile changes
       emailNotifications: userProfile?.preferences?.notifications?.email ?? true,
       inAppNotifications: userProfile?.preferences?.notifications?.inApp ?? true,
     }
   });
 
+  useEffect(() => {
+    if (userProfile) {
+        notificationsForm.reset({
+            emailNotifications: userProfile?.preferences?.notifications?.email ?? true,
+            inAppNotifications: userProfile?.preferences?.notifications?.inApp ?? true,
+        });
+    }
+  }, [userProfile, notificationsForm]);
+
+
   async function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
     setIsLoading(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    setUserProfile(prev => prev ? { ...prev, ...values } : null);
-    // If your auth context's login also updates user details:
-    if(user && values.email !== user.email) { // Check if email is changed to avoid unnecessary re-login
-        updateUserAuthContext(values.email); // This might re-trigger useEffects
-    } else if(user && values.name !== user.name) {
-        // Mock updating username in local storage if it's part of auth context logic
+    setUserProfile(prev => {
+      if (!prev) return null;
+      const updatedProfile = { ...prev, ...values };
+      // Also update mock user in AuthContext if email changed to reflect everywhere else
+      // Note: this "login" is just to refresh context with potentially new email/name for display
+      if (user && (values.email !== user.email || values.name !== user.name)) {
+        const authUser = { ...user, name: values.name, email: values.email };
+         // Simulate updating the auth context's user (name/email only)
         const storedAuth = localStorage.getItem('cyberwatch_auth');
-        if(storedAuth) {
-            const authData = JSON.parse(storedAuth);
-            authData.user.name = values.name;
-            localStorage.setItem('cyberwatch_auth', JSON.stringify(authData));
-             // Manually trigger a state update if useAuth doesn't re-render on localStorage change
-            updateUserAuthContext(user.email); // Re-call to refresh context if needed
+        if (storedAuth) {
+          const authData = JSON.parse(storedAuth);
+          authData.user = authUser;
+          localStorage.setItem('cyberwatch_auth', JSON.stringify(authData));
         }
-    }
+        updateUserAuthContext(values.email); // This might re-trigger useEffects, using email as key
+      }
+      return updatedProfile;
+    });
     toast({ title: "Profile Updated", description: "Your profile information has been saved." });
     setIsLoading(false);
   }
 
   async function onNotificationsSubmit(values: z.infer<typeof notificationsFormSchema>) {
     setIsLoading(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setUserProfile(prev => prev ? {
        ...prev, 
        preferences: { 
-         ...prev.preferences, 
+         ...(prev.preferences || {}), 
          notifications: {
            email: values.emailNotifications,
            inApp: values.inAppNotifications,
@@ -113,6 +134,34 @@ export default function SettingsPage() {
     toast({ title: "Notification Settings Updated", description: "Your notification preferences have been saved." });
     setIsLoading(false);
   }
+
+  const handleAvatarUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUserProfile(prev => {
+          if (!prev) return null;
+          const updatedProfile = { ...prev, avatarUrl: reader.result as string };
+           if (user && prev.email === user.email) { // Also update avatar in localStorage for the main auth user
+            const storedAuth = localStorage.getItem('cyberwatch_auth');
+            if (storedAuth) {
+                const authData = JSON.parse(storedAuth);
+                authData.user.avatarUrl = reader.result as string;
+                localStorage.setItem('cyberwatch_auth', JSON.stringify(authData));
+            }
+          }
+          return updatedProfile;
+        });
+        toast({ title: "Avatar Updated", description: "Your new avatar has been set." });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   
   if (authLoading || !userProfile) {
     return (
@@ -137,10 +186,16 @@ export default function SettingsPage() {
               <AvatarImage src={userProfile.avatarUrl || `https://avatar.vercel.sh/${userProfile.email}.png`} alt={userProfile.name} />
               <AvatarFallback>{userProfile.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
-            <Button variant="outline" size="icon" aria-label="Upload New Avatar" disabled>
+            <Input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              className="hidden" 
+              accept="image/*" 
+            />
+            <Button variant="outline" size="icon" aria-label="Upload New Avatar" onClick={handleAvatarUploadClick}>
               <UploadCloud className="h-4 w-4" />
             </Button>
-             <p className="text-xs text-muted-foreground">File upload is disabled in this demo.</p>
           </div>
           <Form {...profileForm}>
             <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-4">
@@ -224,7 +279,7 @@ export default function SettingsPage() {
           <CardTitle>Account Actions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-            <Link href="/dashboard/change-password"> {/* Placeholder page */}
+            <Link href="/dashboard/change-password"> 
                 <Button variant="outline">Change Password</Button>
             </Link>
             <Button variant="destructive" disabled>Delete Account (Coming Soon)</Button>
