@@ -75,7 +75,7 @@ export default function DashboardOverviewPage() {
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">This feature is under development. Soon you'll be able to collaborate with your team members, share insights, and manage roles directly from CyberWatch.</p>
             <Button variant="outline" disabled>Invite Team Member (Coming Soon)</Button>
-            <Image src="https://placehold.co/600x300.png" alt="Team collaboration placeholder" width={600} height={300} className="mt-4 rounded-md" data-ai-hint="team collaboration"/>
+            <Image src="https://firebasestudio-hosting-downloads.firebaseapp.com/projects%2FDEFAULT_PROJECT%2Ffiles%2F9ab6f449-f43f-4e2f-88a4-bb2d883e502d.png?alt=media&token=277362bb-5906-405b-9fc9-038d17521cf6" alt="Team collaboration illustration" width={600} height={300} className="mt-4 rounded-md object-contain" data-ai-hint="team building"/>
           </CardContent>
         </Card>
       </div>
