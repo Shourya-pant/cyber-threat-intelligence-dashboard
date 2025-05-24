@@ -60,8 +60,7 @@ export const mockAlertSettings: AlertSetting[] = [
 export const mockUserProfile: UserProfile = {
   name: 'Alex Johnson',
   email: 'alex.johnson@example.com',
-  avatarUrl: 'https://placehold.co/100x100.png',
-  dataAiHint: 'profile user',
+  // avatarUrl and dataAiHint removed
   preferences: {
     notifications: {
       email: true,

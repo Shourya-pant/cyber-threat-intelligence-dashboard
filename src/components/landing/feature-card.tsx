@@ -10,23 +10,11 @@ interface FeatureCardProps {
   description: string;
   linkHref: string;
   linkLabel: string;
-  dataAiHint?: string;
-  imageUrl?: string;
 }
 
-export function FeatureCard({ icon: Icon, title, description, linkHref, linkLabel, dataAiHint, imageUrl }: FeatureCardProps) {
+export function FeatureCard({ icon: Icon, title, description, linkHref, linkLabel }: FeatureCardProps) {
   return (
     <Card className="flex flex-col overflow-hidden h-full hover:shadow-xl hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1">
-      {imageUrl && (
-        <div className="aspect-video overflow-hidden">
-           <img 
-            src={imageUrl} 
-            alt={title} 
-            data-ai-hint={dataAiHint} 
-            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" 
-          />
-        </div>
-      )}
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3 mb-2">
           <Icon className="w-8 h-8 text-primary" />

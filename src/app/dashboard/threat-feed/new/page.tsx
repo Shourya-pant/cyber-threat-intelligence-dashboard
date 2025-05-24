@@ -16,7 +16,6 @@ import { useToast } from '@/hooks/use-toast';
 import { SEVERITY_LEVELS, THREAT_CATEGORIES } from '@/lib/constants';
 import type { SeverityLevel, ThreatCategory } from '@/lib/constants';
 import { ArrowLeft, Loader2, ShieldPlus } from 'lucide-react';
-import Image from 'next/image';
 
 const newThreatFormSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
@@ -205,19 +204,10 @@ export default function NewThreatPage() {
                     <p>Your contribution helps keep the community informed!</p>
                 </CardContent>
             </Card>
-             <Image 
-                src="https://placehold.co/400x300.png" 
-                alt="Cybersecurity professional reporting a threat" 
-                width={400} 
-                height={300} 
-                className="rounded-md object-cover w-full"
-                data-ai-hint="security report"
-            />
+             {/* Image removed from here */}
         </div>
 
       </div>
     </div>
   );
 }
-
-    

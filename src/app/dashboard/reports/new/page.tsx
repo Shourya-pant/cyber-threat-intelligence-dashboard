@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { FileText, Loader2, Wand2, CalendarDays } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { generateReport, type GenerateReportOutput } from "@/ai/flows/generate-report-flow";
 import { useToast } from "@/hooks/use-toast";
@@ -126,27 +125,13 @@ export default function NewReportPage() {
           <CardContent>
             <h3 className="text-lg font-semibold mb-2 text-foreground/90">Summary:</h3>
             <p className="whitespace-pre-wrap text-base leading-relaxed text-muted-foreground">{reportOutput.reportSummary}</p>
-            <Image 
-              src="https://placehold.co/600x300.png" 
-              alt="Report illustration" 
-              width={600} 
-              height={300} 
-              className="mt-6 rounded-md object-cover mx-auto opacity-70"
-              data-ai-hint="report document"
-            />
+            {/* Image removed from here */}
           </CardContent>
         </Card>
       )}
        {!isLoading && !reportOutput && (
          <div className="text-center py-10">
-            <Image 
-                src="https://placehold.co/400x250.png" 
-                alt="Waiting for report parameters" 
-                width={400} 
-                height={250} 
-                className="rounded-md object-cover mx-auto my-4 opacity-60"
-                data-ai-hint="data analysis"
-            />
+            {/* Image removed from here */}
             <p className="text-muted-foreground">Fill in the parameters above and click "Generate Report".</p>
         </div>
       )}
