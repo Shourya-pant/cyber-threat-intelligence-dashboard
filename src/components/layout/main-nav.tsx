@@ -1,6 +1,9 @@
 
 "use client";
-
+// This component is no longer used after removing the sidebar.
+// It can be safely deleted or kept for future reference if a complex top nav is needed.
+// For now, its content is commented out to prevent any build issues if still imported elsewhere.
+/*
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as LucideIcons from "lucide-react";
@@ -79,11 +82,13 @@ export function MainNav({ links }: MainNavProps) {
         {mainLinks.map(link => renderLink(link))}
       
       {settingsLinks.length > 0 && (
-        <SidebarGroup className="pt-4 border-t border-sidebar-border"> {/* Removed mt-auto here */}
+        <SidebarGroup className="pt-4 border-t border-sidebar-border">
           {settingsLinks.map(link => renderLink(link))}
         </SidebarGroup>
       )}
     </SidebarMenu>
   );
 }
+*/
 
+export {}; // Add an empty export to make it a module if all content is commented out

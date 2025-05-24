@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
-import { LogIn, LogOut, Settings, UserCircle } from "lucide-react";
+import { LogIn, LogOut, Settings, UserCircle, LayoutDashboard } from "lucide-react";
 
 export function UserNav() {
   const { isAuthenticated, user, logout, loading } = useAuth();
@@ -54,16 +55,16 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <Link href="/dashboard">
+            <DropdownMenuItem>
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <span>Dashboard</span>
+            </DropdownMenuItem>
+          </Link>
           <Link href="/dashboard/settings">
             <DropdownMenuItem>
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
-            </DropdownMenuItem>
-          </Link>
-           <Link href="/dashboard">
-            <DropdownMenuItem>
-              <UserCircle className="mr-2 h-4 w-4" />
-              <span>Dashboard</span>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
