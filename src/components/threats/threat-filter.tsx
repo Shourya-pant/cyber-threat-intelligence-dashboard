@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,8 @@ import { Label } from "../ui/label";
 interface ThreatFilterProps {
   onFilterChange: (filters: Record<string, any>) => void;
 }
+
+const ALL_SEVERITIES_VALUE = "ALL_SEVERITIES_PLACEHOLDER";
 
 export function ThreatFilter({ onFilterChange }: ThreatFilterProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,12 +66,21 @@ export function ThreatFilter({ onFilterChange }: ThreatFilterProps) {
         
         <div>
           <Label htmlFor="severity-filter">Severity</Label>
-          <Select value={severity} onValueChange={(value) => setSeverity(value as SeverityLevel | "")}>
+          <Select 
+            value={severity} // This correctly uses "" for placeholder behavior via SelectValue
+            onValueChange={(value) => {
+              if (value === ALL_SEVERITIES_VALUE) {
+                setSeverity(""); // Set to empty string for "Any Severity" logic
+              } else {
+                setSeverity(value as SeverityLevel);
+              }
+            }}
+          >
             <SelectTrigger id="severity-filter">
               <SelectValue placeholder="Any Severity" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any Severity</SelectItem>
+              <SelectItem value={ALL_SEVERITIES_VALUE}>Any Severity</SelectItem>
               {SEVERITY_LEVELS.map(level => (
                 <SelectItem key={level} value={level}>{level}</SelectItem>
               ))}
@@ -152,3 +164,4 @@ export function ThreatFilter({ onFilterChange }: ThreatFilterProps) {
     </div>
   );
 }
+
