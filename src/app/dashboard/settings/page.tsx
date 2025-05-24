@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { Loader2, Save, UploadCloud } from 'lucide-react';
 import type { UserProfile } from '@/types'; // Assuming UserProfile is defined
 import { mockUserProfile } from '@/lib/mock-data'; // Using mock data
+import Link from 'next/link';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
