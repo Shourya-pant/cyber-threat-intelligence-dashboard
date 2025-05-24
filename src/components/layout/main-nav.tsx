@@ -79,10 +79,11 @@ export function MainNav({ links }: MainNavProps) {
         {mainLinks.map(link => renderLink(link))}
       
       {settingsLinks.length > 0 && (
-        <SidebarGroup className="mt-auto pt-4 border-t border-sidebar-border">
+        <SidebarGroup className="pt-4 border-t border-sidebar-border"> {/* Removed mt-auto here */}
           {settingsLinks.map(link => renderLink(link))}
         </SidebarGroup>
       )}
     </SidebarMenu>
   );
 }
+
