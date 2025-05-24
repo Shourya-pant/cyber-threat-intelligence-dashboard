@@ -6,10 +6,9 @@ import { mockThreats } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { AlertTriangle, ArrowLeft, CalendarDays, FileText, ShieldCheck, Layers, Tag, BarChart } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CalendarDays, FileText, ShieldCheck, Layers, Tag, BarChart, Brain, Loader2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
 
 const severityColors: Record<Threat['severity'], string> = {
   Low: 'bg-green-500/20 text-green-400 border-green-500/30',
