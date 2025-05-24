@@ -159,7 +159,8 @@ const SidebarHeader = React.forwardRef<
       ref={ref}
       className={cn(
         "flex h-16 items-center border-b border-sidebar-border px-4 shrink-0",
-        collapsible === "icon" && !open && "justify-center",
+        // This class was: collapsible === "icon" && !open && "justify-center",
+        // We now control content alignment within the link itself or via SidebarMenuButton for generic items
         className
       )}
       {...props}
@@ -212,14 +213,32 @@ const SidebarTrigger = React.forwardRef<
     setOpen(!open)
   }
 
-  if (collapsible === "none" && !isMobile) return null // No trigger if not collapsible on desktop
+  if (collapsible === "none" && !isMobile) return null 
+
+  const Comp = asChild ? Slot : Button;
 
   if (asChild && children) {
-    return (
-      <Slot onClick={handleClick} ref={ref} {...props}>
-        {children}
-      </Slot>
-    )
+     return (
+      <Comp onClick={handleClick} ref={ref} {...props}>
+        {React.Children.only(children)}
+      </Comp>
+    );
+  }
+  
+  // Default trigger button if no children are passed via asChild
+  // This logic determines where and how the default trigger button appears
+  let triggerClassName = className;
+  if (isMobile) {
+    // On mobile, always show as a fixed button if it's the default trigger
+    triggerClassName = cn("fixed bottom-4 right-4 z-50 lg:hidden", className);
+  } else if (collapsible === 'button') {
+    // On desktop, for 'button' collapsible type, position it next to the sidebar
+    triggerClassName = cn("absolute -right-4 top-1/2 -translate-y-1/2 hidden md:flex", className);
+  } else if (collapsible === 'icon') {
+    // For 'icon' collapsible type on desktop, this default trigger is usually not rendered here
+    // as the trigger is often part of the header/main layout.
+    // If it *is* rendered (e.g. no children provided to an external SidebarTrigger), it would be hidden unless explicit className is passed.
+    triggerClassName = cn("hidden", className); // Default to hidden on desktop for icon mode if not explicitly placed
   }
 
 
@@ -229,10 +248,8 @@ const SidebarTrigger = React.forwardRef<
       variant="ghost"
       size="icon"
       className={cn(
-        "rounded-full transition-transform duration-300 ease-in-out data-[state=open]:rotate-180",
-        isMobile ? "fixed bottom-4 right-4 z-50 lg:hidden" : "hidden", // Show on mobile, hide on desktop if button type
-        collapsible === "button" && !isMobile && "absolute -right-4 top-1/2 -translate-y-1/2 hidden md:flex", // Desktop button trigger
-        className
+        // "rounded-full transition-transform duration-300 ease-in-out data-[state=open]:rotate-180", // Rotation can be added if desired
+        triggerClassName
       )}
       onClick={handleClick}
       data-state={open ? "open" : "closed"}
@@ -252,7 +269,7 @@ SidebarTrigger.displayName = "SidebarTrigger"
 
 // === Menu Components ===
 const menuBaseStyles =
-  "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+  "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group" // Added group here
 
 const SidebarMenu = React.forwardRef<
   HTMLDivElement,
@@ -291,16 +308,20 @@ const SidebarMenuButton = React.forwardRef<
   ) => {
     const { open, collapsible } = useSidebar()
     const Comp = asChild ? Slot : "button"
+    
+    const isIconCollapsed = collapsible === 'icon' && !open;
+
     const buttonContent = (
       <Comp
         ref={ref}
+        data-icon-collapsed={isIconCollapsed} // Add data attribute
         className={cn(
           menuBaseStyles,
-          "w-full justify-start group-data-[collapsible=icon]:justify-center",
+          "w-full justify-start", // Text alignment is handled by child spans now
           isActive
             ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
             : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-          collapsible === "icon" && !open && "justify-center",
+          isIconCollapsed && "justify-center", // Center content (icon) when icon-collapsed
           className
         )}
         {...props}
@@ -309,7 +330,7 @@ const SidebarMenuButton = React.forwardRef<
       </Comp>
     )
 
-    if (collapsible === "icon" && !open && tooltip) {
+    if (isIconCollapsed && tooltip) {
       return (
         <Tooltip>
           <TooltipTrigger asChild>{buttonContent}</TooltipTrigger>
@@ -347,7 +368,7 @@ const SidebarGroupLabel = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60",
+        "px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60 whitespace-nowrap",
         className
       )}
       {...props}

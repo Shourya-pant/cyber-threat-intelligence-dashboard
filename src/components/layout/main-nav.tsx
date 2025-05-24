@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -12,6 +13,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  useSidebar, // Import useSidebar
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +33,8 @@ interface MainNavProps {
 
 export function MainNav({ links }: MainNavProps) {
   const pathname = usePathname();
+  // Not needed here as SidebarMenuButton handles its own state
+  // const { open, collapsible } = useSidebar(); 
 
   const renderLink = (link: NavLink, isSubItem: boolean = false) => {
     const IconComponent = link.iconName ? LucideIcons[link.iconName] as LucideIcons.LucideIcon : LucideIcons.ChevronRight;
@@ -42,7 +46,7 @@ export function MainNav({ links }: MainNavProps) {
           <Link href={link.href} legacyBehavior passHref>
             <SidebarMenuSubButton isActive={isActive} aria-label={link.label}>
               {link.iconName && <IconComponent />} 
-              <span>{link.label}</span>
+              <span className="group-data-[icon-collapsed=true]:hidden whitespace-nowrap">{link.label}</span>
             </SidebarMenuSubButton>
           </Link>
         </SidebarMenuSubItem>
@@ -54,10 +58,10 @@ export function MainNav({ links }: MainNavProps) {
         <Link href={link.href} legacyBehavior passHref>
           <SidebarMenuButton isActive={isActive} tooltip={link.label}>
             <IconComponent />
-            <span>{link.label}</span>
+            <span className="group-data-[icon-collapsed=true]:hidden whitespace-nowrap">{link.label}</span>
           </SidebarMenuButton>
         </Link>
-        {link.subItems && link.subItems.length > 0 && isActive && (
+        {link.subItems && link.subItems.length > 0 && isActive && ( // Submenu still depends on 'open' state if it's not to be shown when parent is icon only
            <SidebarMenuSub>
             {link.subItems.map(subLink => renderLink(subLink, true))}
           </SidebarMenuSub>
@@ -66,21 +70,16 @@ export function MainNav({ links }: MainNavProps) {
     );
   };
   
-  // Example of grouping, can be customized further
   const mainLinks = links.filter(link => !link.href.includes('settings'));
   const settingsLinks = links.filter(link => link.href.includes('settings'));
 
 
   return (
     <SidebarMenu>
-      {/* <SidebarGroup>
-        <SidebarGroupLabel>Main Menu</SidebarGroupLabel> */}
         {mainLinks.map(link => renderLink(link))}
-      {/* </SidebarGroup> */}
       
       {settingsLinks.length > 0 && (
         <SidebarGroup className="mt-auto pt-4 border-t border-sidebar-border">
-          {/* <SidebarGroupLabel>Configuration</SidebarGroupLabel> */}
           {settingsLinks.map(link => renderLink(link))}
         </SidebarGroup>
       )}
