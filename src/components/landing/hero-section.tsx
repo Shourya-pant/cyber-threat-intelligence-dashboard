@@ -1,9 +1,32 @@
+
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ShieldCheck, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+
+interface LineCoordinate {
+  x1: string;
+  y1: string;
+  x2: string;
+  y2: string;
+  delay: string;
+}
 
 export function HeroSection() {
+  const [lineCoordinates, setLineCoordinates] = useState<LineCoordinate[]>([]);
+
+  useEffect(() => {
+    const newCoordinates: LineCoordinate[] = [...Array(20)].map((_, i) => ({
+      x1: `${Math.random() * 100}%`,
+      y1: `${Math.random() * 100}%`,
+      x2: `${Math.random() * 100}%`,
+      y2: `${Math.random() * 100}%`,
+      delay: `${i * 0.2}s`,
+    }));
+    setLineCoordinates(newCoordinates);
+  }, []); // Empty dependency array ensures this runs once on mount, client-side only
+
   return (
     <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-background to-secondary/20 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -11,22 +34,22 @@ export function HeroSection() {
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/10 rounded-full animate-pulse delay-500"></div>
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-accent/5 rounded-full animate-pulse delay-1000"></div>
         {/* Animated lines - placeholder, requires more complex SVG/JS animation */}
-         <svg className="absolute inset-0 w-full h-full opacity-10" 
+         <svg className="absolute inset-0 w-full h-full opacity-10"
            style={{
              transform: 'scale(1.5)',
              maskImage: 'radial-gradient(circle at center, white 20%, transparent 70%)'
            }}>
-          {[...Array(20)].map((_, i) => (
+          {lineCoordinates.map((coords, i) => (
             <line
               key={i}
-              x1={`${Math.random() * 100}%`}
-              y1={`${Math.random() * 100}%`}
-              x2={`${Math.random() * 100}%`}
-              y2={`${Math.random() * 100}%`}
+              x1={coords.x1}
+              y1={coords.y1}
+              x2={coords.x2}
+              y2={coords.y2}
               stroke="hsl(var(--primary) / 0.2)"
               strokeWidth="1"
               className="animate-draw-line"
-              style={{ animationDelay: `${i * 0.2}s` }}
+              style={{ animationDelay: coords.delay }}
             />
           ))}
         </svg>
