@@ -1,0 +1,76 @@
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Activity, AlertTriangle, BarChart2, Brain, ShieldCheck, Users } from 'lucide-react';
+import { APP_NAME } from '@/lib/constants';
+import Image from 'next/image';
+
+export default function DashboardOverviewPage() {
+  const quickLinks = [
+    { title: "Latest Threats", href: "/dashboard/threat-feed", icon: ShieldCheck, description: "View the most recent cyber threats." },
+    { title: "Analytics", href: "/dashboard/analytics", icon: BarChart2, description: "Analyze threat trends and patterns." },
+    { title: "AI Summary", href: "/dashboard/ai-summary", icon: Brain, description: "Get AI-powered summaries of vulnerabilities." },
+    { title: "Manage Alerts", href: "/dashboard/alerts", icon: AlertTriangle, description: "Configure and review your custom alerts." },
+  ];
+
+  return (
+    <div className="space-y-8 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome to {APP_NAME}</h1>
+          <p className="text-muted-foreground">Your central hub for cybersecurity intelligence.</p>
+        </div>
+        <Link href="/dashboard/threat-feed/new"> {/* Assuming a page to report/add new threat */}
+          <Button>Report New Threat</Button>
+        </Link>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {quickLinks.map((link) => (
+          <Link href={link.href} key={link.title} legacyBehavior>
+            <a className="block">
+              <Card className="hover:border-primary/70 hover:shadow-lg transition-all h-full">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{link.title}</CardTitle>
+                  <link.icon className="h-5 w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-muted-foreground">{link.description}</p>
+                </CardContent>
+              </Card>
+            </a>
+          </Link>
+        ))}
+      </div>
+      
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Activity className="h-5 w-5 text-primary" /> Recent Activity</CardTitle>
+            <CardDescription>Overview of recent actions and system status.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>New 'Log4Shell' variant detected. <Link href="/dashboard/threat-feed/threat-1" className="text-primary hover:underline">View details</Link></li>
+              <li>AI summary generated for 'CVE-2024-XXXX'. <Link href="/dashboard/ai-summary/summary-1" className="text-primary hover:underline">Read summary</Link></li>
+              <li>Critical alert 'Ransomware Spike' triggered. <Link href="/dashboard/alerts/alert-1" className="text-primary hover:underline">Review alert</Link></li>
+              <li>Analytics report for Q2 2024 updated. <Link href="/dashboard/analytics" className="text-primary hover:underline">See report</Link></li>
+            </ul>
+             <Image src="https://placehold.co/600x300.png" alt="Activity graph placeholder" width={600} height={300} className="mt-4 rounded-md" data-ai-hint="activity graph"/>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Team & Collaboration</CardTitle>
+            <CardDescription>Connect with your team and manage access.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">This feature is under development. Soon you'll be able to collaborate with your team members, share insights, and manage roles directly from CyberWatch.</p>
+            <Button variant="outline" disabled>Invite Team Member (Coming Soon)</Button>
+            <Image src="https://placehold.co/600x300.png" alt="Team collaboration placeholder" width={600} height={300} className="mt-4 rounded-md" data-ai-hint="team collaboration"/>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
