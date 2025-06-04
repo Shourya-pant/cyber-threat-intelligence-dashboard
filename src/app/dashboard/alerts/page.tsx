@@ -11,7 +11,6 @@ import { mockAlertSettings } from '@/lib/mock-data';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertSetting[]>([]);
@@ -117,14 +116,7 @@ export default function AlertsPage() {
           <p className="mt-1 text-sm text-muted-foreground">
             Create your first alert to get notified about specific threats.
           </p>
-          <Image 
-            src="https://placehold.co/300x200.png" 
-            alt="Empty alerts illustration" 
-            width={300} 
-            height={200} 
-            className="my-6 rounded-md object-cover"
-            data-ai-hint="empty alert"
-          />
+          {/* Image removed from here */}
           <Button className="mt-4" onClick={() => { setEditingAlert(undefined); setShowForm(true); }}>
             <PlusCircle className="mr-2 h-4 w-4" /> Create Alert
           </Button>

@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { mockThreats } from '@/lib/mock-data';
 import { Loader2 } from 'lucide-react';
-import Image from 'next/image';
 
 export default function AiSummaryPage() {
   const searchParams = useSearchParams();
@@ -49,14 +48,7 @@ export default function AiSummaryPage() {
                 Generate concise summaries of cybersecurity threats using AI. Paste any threat details below to get started.
               </p>
             </div>
-            <Image 
-              src="https://placehold.co/400x250.png" 
-              alt="AI analyzing data" 
-              width={400} 
-              height={250} 
-              className="rounded-md object-cover"
-              data-ai-hint="AI security"
-            />
+            {/* Image removed from here */}
           </div>
         </div>
       )}

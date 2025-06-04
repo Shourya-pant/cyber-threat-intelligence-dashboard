@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, AlertTriangle, BarChart2, Brain, ShieldCheck, Users } from 'lucide-react';
 import { APP_NAME } from '@/lib/constants';
-import Image from 'next/image';
 import { mockThreats } from '@/lib/mock-data'; // Import mockThreats
 
 export default function DashboardOverviewPage() {
@@ -24,7 +23,7 @@ export default function DashboardOverviewPage() {
           <h1 className="text-3xl font-bold tracking-tight">Welcome to {APP_NAME}</h1>
           <p className="text-muted-foreground">Your central hub for cybersecurity intelligence.</p>
         </div>
-        <Link href="/dashboard/threat-feed/new"> {/* Assuming a page to report/add new threat */}
+        <Link href="/dashboard/threat-feed/new"> 
           <Button>Report New Threat</Button>
         </Link>
       </div>
@@ -64,7 +63,7 @@ export default function DashboardOverviewPage() {
               <li>Critical alert 'Ransomware Spike' triggered. <Link href="/dashboard/alerts" className="text-primary hover:underline">Review alerts</Link></li>
               <li>Analytics report for Q2 2024 updated. <Link href="/dashboard/analytics" className="text-primary hover:underline">See report</Link></li>
             </ul>
-             <Image src="https://placehold.co/600x300.png" alt="Activity graph placeholder" width={600} height={300} className="mt-4 rounded-md" data-ai-hint="activity graph"/>
+             {/* Image removed from here */}
           </CardContent>
         </Card>
         <Card>
@@ -75,7 +74,7 @@ export default function DashboardOverviewPage() {
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">This feature is under development. Soon you'll be able to collaborate with your team members, share insights, and manage roles directly from CyberWatch.</p>
             <Button variant="outline" disabled>Invite Team Member (Coming Soon)</Button>
-            <Image src="https://firebasestudio-hosting-downloads.firebaseapp.com/projects%2FDEFAULT_PROJECT%2Ffiles%2F9ab6f449-f43f-4e2f-88a4-bb2d883e502d.png?alt=media&token=277362bb-5906-405b-9fc9-038d17521cf6" alt="Team collaboration illustration" width={600} height={300} className="mt-4 rounded-md object-contain" data-ai-hint="team building"/>
+            {/* Image removed from here */}
           </CardContent>
         </Card>
       </div>

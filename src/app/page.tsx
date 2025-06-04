@@ -14,8 +14,6 @@ export default function LandingPage() {
       description: "Access up-to-the-minute cybersecurity threat updates. Stay informed about the latest vulnerabilities, malware, and attack vectors.",
       linkHref: "/dashboard/threat-feed",
       linkLabel: "Explore Threat Feed",
-      imageUrl: "https://placehold.co/600x400.png",
-      dataAiHint: "cybersecurity feed"
     },
     {
       icon: BarChartBig,
@@ -23,8 +21,6 @@ export default function LandingPage() {
       description: "Visualize threat landscapes with interactive charts. Understand common threats, severity distributions, and evolving trends.",
       linkHref: "/dashboard/analytics",
       linkLabel: "View Analytics Dashboard",
-      imageUrl: "https://placehold.co/600x400.png",
-      dataAiHint: "data analytics"
     },
     {
       icon: BrainCircuit,
@@ -32,8 +28,6 @@ export default function LandingPage() {
       description: "Leverage AI to get concise summaries of complex security vulnerabilities. Understand threats at a glance and act faster.",
       linkHref: "/dashboard/ai-summary",
       linkLabel: "Use AI Summary Tool",
-      imageUrl: "https://placehold.co/600x400.png",
-      dataAiHint: "artificial intelligence"
     },
     {
       icon: BellRing,
@@ -41,8 +35,6 @@ export default function LandingPage() {
       description: "Set up personalized alerts for specific risk levels, threat categories, or keywords. Get notified about what matters most to you.",
       linkHref: "/dashboard/alerts",
       linkLabel: "Configure Alerts",
-      imageUrl: "https://placehold.co/600x400.png",
-      dataAiHint: "notification bell"
     },
     {
       icon: Search,
@@ -50,8 +42,6 @@ export default function LandingPage() {
       description: "Easily find relevant threats using keyword search and category filters. Pinpoint specific information quickly and efficiently.",
       linkHref: "/dashboard/threat-feed", // Search is part of threat feed
       linkLabel: "Try Search & Filter",
-      imageUrl: "https://placehold.co/600x400.png",
-      dataAiHint: "search interface"
     },
     {
       icon: Users,
@@ -59,8 +49,6 @@ export default function LandingPage() {
       description: "Customize your CyberWatch experience. Manage your profile, settings, and preferences for a tailored view of cyber intelligence.",
       linkHref: "/dashboard/settings",
       linkLabel: "Personalize Settings",
-      imageUrl: "https://placehold.co/600x400.png",
-      dataAiHint: "user settings"
     }
   ];
 

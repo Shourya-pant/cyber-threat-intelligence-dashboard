@@ -11,18 +11,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'firebasestudio-hosting-downloads.firebaseapp.com',
-        port: '',
-        pathname: '/**',
-      },
+      // Patterns for placehold.co and firebasestudio-hosting-downloads removed
     ],
   },
 };

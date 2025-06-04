@@ -7,9 +7,8 @@ import { mockThreats } from '@/lib/mock-data';
 import { ThreatCard } from '@/components/threats/threat-card';
 import { ThreatFilter } from '@/components/threats/threat-filter';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, ListFilter, Loader2, ShieldOff } from 'lucide-react'; // Added ShieldOff, removed ListFilter if not used
+import { ArrowLeft, ArrowRight, ListFilter, Loader2, ShieldOff } from 'lucide-react'; 
 import { parseISO, compareDesc } from 'date-fns';
-import Image from 'next/image';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -99,14 +98,7 @@ export default function ThreatFeedPage() {
           <p className="mt-1 text-sm text-muted-foreground">
             Try adjusting your filters or check back later for new updates.
           </p>
-          <Image 
-            src="https://placehold.co/300x200.png" 
-            alt="No threats found illustration" 
-            width={300} 
-            height={200} 
-            className="my-6 rounded-md object-cover"
-            data-ai-hint="empty security"
-          />
+          {/* Image removed from here */}
         </div>
       )}
 

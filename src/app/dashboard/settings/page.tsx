@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Removed AvatarImage
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
@@ -35,20 +35,28 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (user) {
-      // Attempt to load from localStorage first, then fallback to mock/auth user
       const storedProfile = localStorage.getItem(`userProfile_${user.email}`);
       if (storedProfile) {
-        setUserProfile(JSON.parse(storedProfile));
+        const parsedProfile = JSON.parse(storedProfile);
+        setUserProfile(parsedProfile);
+        if (parsedProfile.avatarDataUrl) {
+          setAvatarPreview(parsedProfile.avatarDataUrl);
+        } else {
+          setAvatarPreview(user.avatarUrl || null); // Use auth context avatar if available
+        }
       } else {
         setUserProfile({
           ...mockUserProfile, 
           name: user.name,
           email: user.email,
-          avatarUrl: user.avatarUrl || mockUserProfile.avatarUrl,
+          // avatarUrl is no longer in mockUserProfile directly for display
         });
+        setAvatarPreview(user.avatarUrl || null);
       }
     }
   }, [user]);
@@ -67,17 +75,17 @@ export default function SettingsPage() {
         name: userProfile.name,
         email: userProfile.email,
       });
-      // Save to localStorage whenever userProfile changes
       if(userProfile.email){
-        localStorage.setItem(`userProfile_${userProfile.email}`, JSON.stringify(userProfile));
+        localStorage.setItem(`userProfile_${userProfile.email}`, JSON.stringify({...userProfile, avatarDataUrl: avatarPreview }));
       }
     }
-  }, [userProfile, profileForm]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile, profileForm, avatarPreview]); // Added avatarPreview to deps
 
 
   const notificationsForm = useForm<z.infer<typeof notificationsFormSchema>>({
     resolver: zodResolver(notificationsFormSchema),
-    values: { // Use values to react to userProfile changes
+    values: { 
       emailNotifications: userProfile?.preferences?.notifications?.email ?? true,
       inAppNotifications: userProfile?.preferences?.notifications?.inApp ?? true,
     }
@@ -98,19 +106,16 @@ export default function SettingsPage() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     setUserProfile(prev => {
       if (!prev) return null;
-      const updatedProfile = { ...prev, ...values };
-      // Also update mock user in AuthContext if email changed to reflect everywhere else
-      // Note: this "login" is just to refresh context with potentially new email/name for display
+      const updatedProfile = { ...prev, ...values, avatarDataUrl: avatarPreview };
       if (user && (values.email !== user.email || values.name !== user.name)) {
-        const authUser = { ...user, name: values.name, email: values.email };
-         // Simulate updating the auth context's user (name/email only)
+        const authUser = { ...user, name: values.name, email: values.email, avatarUrl: avatarPreview || user.avatarUrl };
         const storedAuth = localStorage.getItem('cyberwatch_auth');
         if (storedAuth) {
           const authData = JSON.parse(storedAuth);
           authData.user = authUser;
           localStorage.setItem('cyberwatch_auth', JSON.stringify(authData));
         }
-        updateUserAuthContext(values.email); // This might re-trigger useEffects, using email as key
+        updateUserAuthContext(values.email); 
       }
       return updatedProfile;
     });
@@ -144,20 +149,24 @@ export default function SettingsPage() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
+        const newAvatarDataUrl = reader.result as string;
+        setAvatarPreview(newAvatarDataUrl); // Update preview state
+
+        // Update userProfile state and localStorage
         setUserProfile(prev => {
           if (!prev) return null;
-          const updatedProfile = { ...prev, avatarUrl: reader.result as string };
-           if (user && prev.email === user.email) { // Also update avatar in localStorage for the main auth user
+          const updatedProfile = { ...prev, avatarDataUrl: newAvatarDataUrl };
+           if (user && prev.email === user.email) { 
             const storedAuth = localStorage.getItem('cyberwatch_auth');
             if (storedAuth) {
                 const authData = JSON.parse(storedAuth);
-                authData.user.avatarUrl = reader.result as string;
+                authData.user.avatarUrl = newAvatarDataUrl; // Update avatar in auth context storage
                 localStorage.setItem('cyberwatch_auth', JSON.stringify(authData));
             }
           }
           return updatedProfile;
         });
-        toast({ title: "Avatar Updated", description: "Your new avatar has been set." });
+        toast({ title: "Avatar Updated", description: "Your new avatar has been set. Save profile to persist." });
       };
       reader.readAsDataURL(file);
     }
@@ -183,8 +192,12 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={userProfile.avatarUrl || `https://avatar.vercel.sh/${userProfile.email}.png`} alt={userProfile.name} />
-              <AvatarFallback>{userProfile.name.charAt(0).toUpperCase()}</AvatarFallback>
+              {avatarPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatarPreview} alt={userProfile.name} className="h-full w-full object-cover rounded-full" />
+              ) : (
+                <AvatarFallback>{userProfile.name.charAt(0).toUpperCase()}</AvatarFallback>
+              )}
             </Avatar>
             <Input 
               type="file" 
